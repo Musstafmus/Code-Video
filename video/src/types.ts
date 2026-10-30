@@ -26,3 +26,42 @@ export type VideoProps = {
   label: string;
   analysis?: Analysis;
 };
+
+export type AlignedWord = { text: string; start: number; end: number };
+
+/** scripts/analiz.py --metin çıktısındaki ek alanlar */
+export type AlignedAnalysis = Analysis & {
+  words: AlignedWord[];
+  /** altyazı satırları: [ilk kelime, son kelime] (dahil) */
+  lines: [number, number][];
+};
+
+/** denemeler/<deneme>/sahneler.json */
+export type SceneConfig = {
+  program: string;
+  tarih: string;
+  etiket: string;
+  kayanYazi: string[];
+  bolumler: { kelime: string; baslik: string }[];
+  sahneler: { kelime: string; gorsel: string; ipuclari?: Record<string, string> }[];
+};
+
+/** denemeler/<deneme>/karakter.json */
+export type CharacterRig = {
+  gorsel: string;
+  kaslar: [number, number, number, number][];
+  gozler: { merkez: [number, number]; yaricap: [number, number] }[];
+  biyik: { kutu: [number, number, number, number]; kesim: { x: [number, number]; y: number } };
+  agiz: { merkez: [number, number]; genislik: number };
+  altDudak: { cizgi: [number, number][] };
+  kirpma: { ust: number; alt: number };
+};
+
+export type NewsProps = {
+  deneme: string;
+  audioFile: string;
+  analysis?: AlignedAnalysis;
+  scenes?: SceneConfig;
+  rig?: CharacterRig;
+  imageSize?: [number, number];
+};

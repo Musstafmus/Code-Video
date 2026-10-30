@@ -1,0 +1,38 @@
+{
+  "aciklama": "Ekrandaki çizimler: her sahne 'kelime' söylendiğinde başlar. 'ipuclari' içindeki kelimeler sahne içindeki ek animasyonları tetikler. Kelimeler büyük/küçük harf ve ekten bağımsız eşleşir (Ankara’da -> ankara).",
+  "program": "DANYAL İLE GÜNAYDIN",
+  "tarih": "30 EKİM CUMA",
+  "etiket": "DENEME 2",
+  "kayanYazi": [
+    "Boğaziçi Köprüsü 30 Ekim 1973'te açıldı",
+    "Türk Devletleri Teşkilatı Zirvesi Ankara'da başladı",
+    "Borsa bayram arasının ardından güne yüzde 0,59 düşüşle başladı",
+    "Dolar 50 lira sınırında",
+    "Tasfiyedeki fonlarda ilk ara ödemeler bugün başlıyor",
+    "Alphabet bir günde 500 milyar dolardan fazla değer kaybetti"
+  ],
+  "bolumler": [
+    { "kelime": "Günaydın", "baslik": "BÜLTEN BAŞLIYOR" },
+    { "kelime": "Tarihte", "baslik": "TARİHTE BUGÜN" },
+    { "kelime": "Gündem", "baslik": "GÜNDEM" },
+    { "kelime": "Borsa", "baslik": "EKONOMİ" },
+    { "kelime": "Teknolojide", "baslik": "TEKNOLOJİ" }
+  ],
+  "sahneler": [
+    { "kelime": "Günaydın", "gorsel": "gunaydin", "ipuclari": { "turkiye": "Türkiye" } },
+    { "kelime": "Ben", "gorsel": "spiker", "ipuclari": { "sac": "saçlı", "biyik": "bıyıklı", "isim": "Danyal" } },
+    { "kelime": "Cuma", "gorsel": "enerji", "ipuclari": { "dolu": "gaz" } },
+    { "kelime": "bülten", "gorsel": "bulten" },
+    { "kelime": "Tarihte", "gorsel": "takvim", "ipuclari": { "yil": "1973", "sehir": "İstanbul" } },
+    { "kelime": "Cumhuriyet", "gorsel": "yil50" },
+    { "kelime": "Boğaziçi", "gorsel": "kopru", "ipuclari": { "kita": "kıta", "asfalt": "asfaltla", "birlesti": "birleşti" } },
+    { "kelime": "Gündem", "gorsel": "gundem" },
+    { "kelime": "Ankara", "gorsel": "zirve", "ipuclari": { "liderler": "liderleri" } },
+    { "kelime": "Borsa", "gorsel": "borsa", "ipuclari": { "bayram": "bayram", "dusus": "0,59" } },
+    { "kelime": "dolar", "gorsel": "dolar", "ipuclari": { "elli": "50" } },
+    { "kelime": "tasfiyedeki", "gorsel": "fon", "ipuclari": { "odeme": "ödemeler" } },
+    { "kelime": "Teknolojide", "gorsel": "teknoloji", "ipuclari": { "alphabet": "Alphabet" } },
+    { "kelime": "yapay", "gorsel": "yapayZeka", "ipuclari": { "endise": "endişesiyle" } },
+    { "kelime": "500", "gorsel": "kayip", "ipuclari": { "kayip": "kaybetti" } }
+  ]
+}

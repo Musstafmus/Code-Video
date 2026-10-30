@@ -5,7 +5,9 @@ dağılımından ağzın yuvarlak/geniş olmasını ve "s, ş, z" gibi sürtünm
 seslerde dişlerin görünmesini tahmin eder. Ayrıca vurgu anlarını (kaş kaldırma,
 baş sallama için) ve konuşma bölümlerini (göz kırpma için) çıkarır.
 
-Kullanım: python3 analiz.py <ses dosyası> <çıktı.json> [--fps 30]
+Metin verilirse (--metin) her kelimenin zamanlaması da çıkarılır (bkz. hizala.py).
+
+Kullanım: python3 analiz.py <ses dosyası> <çıktı.json> [--fps 30] [--metin metin.txt]
 Gereksinimler: numpy, ffmpeg
 """
 
@@ -14,6 +16,8 @@ import json
 import subprocess
 
 import numpy as np
+
+from hizala import align
 
 SAMPLE_RATE = 22050
 N_FFT = 1024
@@ -100,7 +104,7 @@ def accents(db, is_speech, fps, min_distance=0.7):
     return picked
 
 
-def analyze(path, fps):
+def analyze(path, fps, text=None):
     samples = load_audio(path)
     rms, spectra = frame_spectra(samples, fps)
     freqs = np.fft.rfftfreq(N_FFT, 1 / SAMPLE_RATE)
@@ -137,7 +141,8 @@ def analyze(path, fps):
     shift = lambda a: np.concatenate([a[lead:], np.repeat(a[-1:], lead)]) if lead else a
 
     r = lambda a: [round(float(x), 3) for x in a]
-    return {
+    segments = speech_segments(is_speech, fps)
+    result = {
         "fps": fps,
         "durationInFrames": len(rms),
         "durationSeconds": round(len(samples) / SAMPLE_RATE, 3),
@@ -148,8 +153,11 @@ def analyze(path, fps):
             "energy": r(energy_s),
         },
         "accents": accents(db, is_speech, fps),
-        "speech": speech_segments(is_speech, fps),
+        "speech": segments,
     }
+    if text:
+        result.update(align(text, is_speech, segments))
+    return result
 
 
 def main():
@@ -157,9 +165,11 @@ def main():
     parser.add_argument("audio")
     parser.add_argument("output")
     parser.add_argument("--fps", type=int, default=30)
+    parser.add_argument("--metin", help="söylenen metnin bulunduğu .txt dosyası")
     args = parser.parse_args()
 
-    result = analyze(args.audio, args.fps)
+    text = open(args.metin, encoding="utf-8").read() if args.metin else None
+    result = analyze(args.audio, args.fps, text)
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(result, f, separators=(",", ":"))
 
@@ -168,6 +178,7 @@ def main():
         f"{result['durationSeconds']} sn, {result['durationInFrames']} kare, "
         f"{len(result['speech'])} konuşma bölümü ({speech_frames / args.fps:.1f} sn), "
         f"{len(result['accents'])} vurgu"
+        + (f", {len(result['words'])} kelime hizalandı" if text else "")
     )
 
 

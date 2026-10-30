@@ -1,0 +1,14 @@
+{
+  "aciklama": "Karakter görselindeki yüz parçalarının konumları (görsel pikseli cinsinden). karakter_hazirla.py bu bölgeleri tabandan silip ayrı katman yapar; HaberVideo bunları kodla hareket ettirir.",
+  "gorsel": "karakter.jpg",
+  "ten": [254, 192, 153],
+  "kaslar": [[486, 512, 606, 574], [674, 512, 779, 566]],
+  "gozler": [
+    { "merkez": [560, 609], "yaricap": [16, 20] },
+    { "merkez": [709, 609], "yaricap": [16, 20] }
+  ],
+  "biyik": { "kutu": [498, 705, 784, 860], "kesim": { "x": [560, 708], "y": 808 }, "boyaBaslangicY": 740 },
+  "agiz": { "merkez": [634, 800], "genislik": 118 },
+  "altDudak": { "kutu": [614, 852, 694, 886], "cizgi": [[622, 869], [652, 881], [686, 860]] },
+  "kirpma": { "ust": 40, "alt": 1330 }
+}

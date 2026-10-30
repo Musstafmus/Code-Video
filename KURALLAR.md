@@ -44,29 +44,50 @@ hangi saniyede söylendiğini verir; hem altyazı hem dudak senkronu kusursuz ol
 denemeler/
   deneme-N/
     ses.mp3 | ses.wav   # zorunlu
-    metin.txt           # önerilen: söylenen metin
+    metin.txt           # söylenen metin (haber formatında zorunlu)
+    karakter.jpg|png    # haber formatı: sunucu görseli
+    karakter.json       # haber formatı: görseldeki yüz parçalarının konumları
+    sahneler.json       # haber formatı: hangi kelimede hangi çizim
     notlar.md           # ses ayarları, gözlemler, iyileştirmeler
     deneme-N.mp4        # çıktı (render betiği üretir)
 ```
 
-Üretim komutu (`video/` klasöründe):
+Üretim komutu (`video/` klasöründe). Klasörde `sahneler.json` varsa haber formatı, yoksa basit
+karakter videosu üretilir:
 
 ```bash
 npm run render -- deneme-N
 ```
 
-## 4. Karakter kimliği (değişmez kurallar)
+## 4. Karakter
 
-Meşhur karakterler tutarlılıkla tanınır. Aşağıdakiler her videoda aynı kalır:
+### Danyal (haber sunucusu, ana karakter)
 
-- **Palet** `video/src/character/colors.ts` içinde sabit: turuncu gövde, yeşil yaprak, koyu
-  mor-lacivert dış çizgi. Yeni renk eklemek = karakterin yeni sürümü.
-- **Silüet:** Yumurta biçimli gövde + başta iki yapraklı filiz + kısa kollar ve ayaklar.
-  Filiz karakterin imzasıdır, kaldırılmaz.
-- **Dış çizgi kalınlığı:** 10 px (1080 genişlikte).
-- **Kişilik:** Sıcak, meraklı, samimi. Kaşlar ve göz bebekleri bu kişiliği taşır; kızgın veya
-  alaycı ifade yalnızca senaryo açıkça istediğinde kullanılır.
-- Karakterin **adı henüz belirlenmedi.**
+- Görsel: `denemeler/deneme-2/karakter.jpg`. Bonus (afro) saç, kalın bıyık, koyu takım elbise,
+  pembe-gri çizgili kravat. **Bu görünüm değişmez**; her videoda aynı görsel kullanılır.
+- Kişilik: Enerjik, samimi, esprili sabah sunucusu. Açılış cümlesi: "Günaydın Türkiye!"
+- Ses: *Orçun Togan – Engaging and Warm* (ElevenLabs).
+
+### Yeni bir karakter görseli hazırlarken
+
+Görsel, kodla hareket ettirilecek parçalara ayrılıyor (`video/scripts/karakter_hazirla.py`).
+Bunun sorunsuz çalışması için:
+
+| Kural | Neden |
+|---|---|
+| **Düz renkli çizim, kalın siyah dış çizgiler** | Kaş, bıyık ve gözler koyu renkten ayırt edilerek kesiliyor |
+| **Düz beyaz arka plan** | Arka plan otomatik siliniyor |
+| **Yüz tam önden, gözler ve kaşlar birbirinden ve saçtan ayrı** | Parçalar birbirine değerse birlikte kesilir |
+| **Göz basit siyah nokta veya oval** | Göz kırpma ve bakış kodla yeniden çiziliyor |
+| **Ağız bıyığın altında veya açıkça görünür, tek parça** | Ağız silinip yerine kodla açılıp kapanan ağız çiziliyor |
+| **En az 1000 px genişlik, dikey kadraj, bel hizasına kadar** | Sunucu masanın arkasında göğüsten yukarısı görünüyor |
+
+Yeni görselde `karakter.json` içindeki kutuları (kaşlar, gözler, bıyık, ağız, alt dudak)
+görsele göre güncelleyin.
+
+### Turuncu filiz karakter (deneme 1)
+
+Kodla çizilmiş ilk deneme karakteri. Paleti `video/src/character/colors.ts` içinde.
 
 ## 5. Animasyon kuralları (kod)
 
@@ -80,12 +101,28 @@ Meşhur karakterler tutarlılıkla tanınır. Aşağıdakiler her videoda aynı 
 | Konuşurken kameraya bakar, duraklamalarda gözleri gezinir | `CharacterVideo.tsx` |
 | **Karakter asla tamamen durmaz:** nefes, salınım, yaprak hareketi her zaman sürer | `Character.tsx` |
 | Hareketler kare kare elle çizilmez; hepsi ses analizinden ve parametrelerden gelir | — |
+| Haber sunucusu: kaşlar vurguda kalkar, başla hafifçe onaylar, gözler konuşurken kameraya bakar | `news/Anchor.tsx` |
 
-## 6. Video düzeni
+## 6. Haber formatı: metinle eş zamanlı çizimler
+
+- Her konu için ekranda bir çizim olur; çizim, konunun **ilk kelimesi söylendiği anda** (4 kare
+  önce) gelir. Sahne içindeki ek animasyonlar da kendi kelimelerine bağlanır (ör. "asfaltla"
+  denince köprünün yolu döşenir). Bunlar `sahneler.json` içinde tanımlanır.
+- Yeni bir konu için yeni bir çizim bileşeni yazılır (`video/src/news/visuals/`) ve
+  `visuals/index.ts`'e eklenir.
+- `metin.txt`, ElevenLabs'a verilen metnin **birebir aynısı** olmalı. Rakamlar sorun değil
+  (hizalama "1973"ü "bin dokuz yüz yetmiş üç" diye sayar), ama metin sesle uyuşmazsa çizimler kayar.
+- **Gerçek kişileri çizmeyin** (karikatür dahil). Haberde geçen kişiler yazıyla belirtilir.
+- **Şirket logoları ve bayraklar kullanılmaz;** şirket adı düz yazıyla yazılır. Bayrak gerekiyorsa
+  resmî ölçülerine göre çizilmeli ve kontrol edilmelidir.
+- Grafikler temsili ise (ör. borsa çizgisi) gerçek değer gibi sayı eklemeyin.
+- Kayan yazı (son dakika bandı) haberlerin kısa özetidir; metinde olmayan bilgi eklemeyin.
+
+## 7. Video düzeni
 
 - **Güvenli alan:** Üst %10 ve alt %20'ye önemli öğe koymayın; platform arayüzü (başlık, butonlar,
   açıklama) bu alanları kapatır.
-- **Altyazı** (metin geldiğinde): karakterin üstünde, büyük ve kalın, kelime kelime vurgulu.
-  Videoların çoğu sessiz izlenir; altyazı zorunlu hale gelecek.
+- **Altyazı:** Alt bantta, büyük ve kalın; söylenen kelime sarı vurgulu. Satır başına en fazla
+  6 kelime / 34 karakter (`hizala.py`). Videoların çoğu sessiz izlenir, altyazı zorunludur.
 - **Müzik:** Konuşmanın en az 20 dB altında, ayrı dosyadan.
-- Denemelerde sol üstte deneme etiketi bulunur; yayın sürümünde kaldırılır.
+- Denemelerde deneme etiketi bulunur (haber formatında üst barın sağında); yayın sürümünde kaldırılır.
