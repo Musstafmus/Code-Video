@@ -2,3 +2,4 @@ node_modules/
 out/
 # render betiği deneme seslerini ve analizlerini buraya kopyalar
 public/denemeler/
+__pycache__/
